@@ -1,3 +1,4 @@
+
 import Contact from '../models/contactModel.js';
 
 // Get all contacts
@@ -19,20 +20,47 @@ export async function getAllContacts() {
 
 // Get contact by Id
 export async function getContactById(id) {
-  // todo
+  try{
+    const contact = await Contact.findById(id);
+    return {success : true, data: contact, message : "contact found "};
+  }catch (err){
+    return {success: false, message : "contacts not found "+err};
+  }
 }
 
 // Add a new contact, returns the added contact
 export async function addContact(body) {
-  // todo
+  try {
+    const addedContact = Contact.create(body);
+    return {
+            success: true,
+            data: newContact,
+            message: "Contact créé avec succès"
+        };
+  }catch(err){
+    return {success : false, message : "contact cannot be added"};
+  }
 }
  
 // Update an existing contact
 export async function updateContact(id, name = null, age = null) {
-   // todo
+   try {
+      const response =await Contact.findByIdAndUpdate(id,{name,age},{new:true});
+      return {success :true,data : response , message: "contact has been updated" };
+   } catch (error) {
+    return {success : false , message : "contact cannot be update"}
+   }
 }
     
 // Remove an existing contact
 export async function removeContact(id) {
-  // todo
+  try {
+    const response= await Contact.findByIdAndDelete(id,{new:true});
+    if (response==null){
+      return {success :false , message : "The contact do not exist"}; 
+    }
+    return {success :true,data: response, message : "The contact has been removed"};
+  } catch (error) {
+     return {success :false , data: error, message : "The contact has not been removed"};
+  }
 }
