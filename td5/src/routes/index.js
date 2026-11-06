@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {addContact, getAllContacts, getContactById, removeContact, updateContact} from '../controllers/contactController.js';
-
+import { requireAuth } from '../middleware/authMiddleware.js';
 const router = Router();
 
 router.get('/', function (req, res) {
@@ -26,7 +26,7 @@ router.get('/', function (req, res) {
  *       '404':
  *         description: The contact couldn't be added to the database.
  */
-router.route('/contacts')
+router.route('/contacts',requireAuth)
     .get(async (req, res) => {
     let response = await getAllContacts();
     if (response.success == true) {
@@ -125,7 +125,13 @@ router.route('/contacts/:id')
         res.status(404).json(error);
     }
 });
-
-
+router.post('/auth/login',async (req,res,next)=>{
+    try{
+    const response=await requireAuth(req,res,next);
+    }catch (error){
+        res.status(401)
+    }
+    });
+router.post('/auth/register')
 export default router;
     
