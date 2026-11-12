@@ -31,14 +31,14 @@ export async function getContactById(id) {
 // Add a new contact, returns the added contact
 export async function addContact(body) {
   try {
-    const addedContact = Contact.create(body);
+    const addedContact = await Contact.create(body);
     return {
             success: true,
-            data: newContact,
+            data: addedContact,
             message: "Contact créé avec succès"
         };
   }catch(err){
-    return {success : false, message : "contact cannot be added"};
+    return {success : false, message : "contact cannot be added", error : err};
   }
 }
  

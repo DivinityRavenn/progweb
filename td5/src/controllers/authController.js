@@ -14,13 +14,20 @@ export async function registerUser(email,password){
 
 }
 
-export async function loginUser(email,password){
+export async function loginUser(email, password) {
     try {
-        const user =await User.findOne({email});
-        const match=await bcrypt.compare(password,user.password);
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return { success: false, message: "Identifiants invalides" };
+        }
+
+        const match = await bcrypt.compare(password, user.password);
         if (!match) {
             return { success: false, message: "Identifiants invalides" };
         }
+
+
         const token = jwt.sign(
             { id: user._id, email: user.email },
             JWT_SECRET,

@@ -18,3 +18,35 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:5000/api/contacts/6ad22b95d05e26f22985d238
+
+### 1. Inscription d'un utilisateur (Register)
+POST http://localhost:5000/api/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "etudiant@exemple.fr",
+    "password": "MotDePasse123!"
+}
+
+### 2. Connexion et récupération du token (Login)
+POST http://localhost:5000/api/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "etudiant@exemple.fr",
+    "password": "MotDePasse123!"
+}
+
+### 3. Route protégée : Récupérer tous les contacts
+GET http://localhost:5000/api/contacts HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjVmYmZiYjQ3ZDVjMzgxNmZkNDRjYSIsImVtYWlsIjoiZXR1ZGlhbnRAZXhlbXBsZS5mciIsImlhdCI6MTc5NDUwNTcyOCwiZXhwIjoxNzk0NTkyMTI4fQ.HLfAX7bB5EOqgPZLQNwo6WWOlDNBhmnU2GHo6nisads
+
+### 4. Route protégée : Ajouter un contact
+POST http://localhost:5000/api/contacts HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjVmYmZiYjQ3ZDVjMzgxNmZkNDRjYSIsImVtYWlsIjoiZXR1ZGlhbnRAZXhlbXBsZS5mciIsImlhdCI6MTc5NDUwNTcyOCwiZXhwIjoxNzk0NTkyMTI4fQ.HLfAX7bB5EOqgPZLQNwo6WWOlDNBhmnU2GHo6nisads
+
+{
+    "name": "Jean Dupont",
+    "age": 30
+}
