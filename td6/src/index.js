@@ -4,7 +4,7 @@ const app = express();
 const PORT = 80;
 
 app.get('/', (req, res) => {
-    res.send('Bonjour !');
+    res.send('modification grace au bind mount !');
 });
 
 app.listen(PORT, () => {
