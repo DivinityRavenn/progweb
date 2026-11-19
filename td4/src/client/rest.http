@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:8080
+
+
+### 
+GET {{baseUrl}}/contacts/6ad22b95d05e26f22985d239
+
+### 
+GET {{baseUrl}}/contacts
+
+###
+POST {{baseUrl}}/contacts
+Content-Type: application/json
+
+{
+    "name": "alice",
+    "age": 22
+}
+###
+PUT {{baseUrl}}/contacts/6ad22b95d05e26f22985d239
+Content-Type: application/json
+
+{
+    "name": "alice",
+    "age": 23
+}
+###
+DELETE {{baseUrl}}/contacts/6ad22b95d05e26f22985d239
+###
+GET {{baseUrl}}/contacts/000000000000000000000000
+###
+GET {{baseUrl}}/contacts/id-invalide
