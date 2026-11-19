@@ -9,3 +9,98 @@ Content-Type: application/json
     "name" : "Alice",
     "email" : "alice@foo.com"
 }
+
+###
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "test@gmail.com",
+    "password": "123"
+}
+###
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "email":"test@gmail.com",
+    "password":"123"
+}
+###
+GET http://localhost:3000/api/contacts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZmYxYjBiNzkxODFhNGY4N2Q3NzM3NyIsImlhdCI6MTc5NTEwMzU5MywiZXhwIjoxNzk1MTA3MTkzfQ.jq71gvHM3KKQzmtsP1bzofdnZnz_HH5gN5B0gef9dS0
+
+###
+POST http://localhost:3000/api/contacts 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZmYxYjBiNzkxODFhNGY4N2Q3NzM3NyIsImlhdCI6MTc5NTEwMzU5MywiZXhwIjoxNzk1MTA3MTkzfQ.jq71gvHM3KKQzmtsP1bzofdnZnz_HH5gN5B0gef9dS0
+Content-Type: application/json
+
+{
+    "name":"edward",
+    "age":21
+}
+
+@baseUrl = http://localhost
+
+### 1. Test du routage Frontend (Nginx -> conteneur front, doit renvoyer du HTML)
+GET {{baseUrl}}/
+
+### 2. Inscription via le reverse proxy
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "test@gmail.com",
+    "password": "123"
+}
+
+### 3. Connexion (capture automatiquement la réponse dans "login")
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "test@gmail.com",
+    "password": "123"
+}
+
+### Récupération automatique du JWT (remplace par le token brut si ton JSON a une autre structure)
+@token = {{login.response.body.token}}
+
+### 4. Test de sécurité sans token (vérifie que le 401 remonte bien via Nginx)
+GET {{baseUrl}}/api/contacts
+
+### 5. Lecture des contacts (vérifie que Nginx transmet bien le header Authorization)
+GET {{baseUrl}}/api/contacts
+Authorization: Bearer {{token}}
+
+### 6. Création d'un contact via Nginx (écriture MongoDB + invalidation du cache Redis)
+POST {{baseUrl}}/api/contacts
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "edward",
+    "age": 21
+}
+
+### 7. Relecture pour vérifier la mise à jour (1er appel = Mongo, 2e appel = cache Redis)
+GET {{baseUrl}}/api/contacts
+Authorization: Bearer {{token}}
+
+### 8. Mise à jour d'un contact (remplace <ID_CONTACT> par un _id reçu à l'étape 7)
+PUT {{baseUrl}}/api/contacts/<ID_CONTACT>
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Edward",
+    "age": 22
+}
+
+### 9. Suppression d'un contact
+DELETE {{baseUrl}}/api/contacts/<ID_CONTACT>
+Authorization: Bearer {{token}}
+
+### 10. Test du piège de routage : requête SANS /api (Nginx l'envoie au Front React, pas à l'API)
+GET {{baseUrl}}/contacts

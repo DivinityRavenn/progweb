@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { getAllContacts, getContactById, updateContact, removeContact, addContact } from '../controllers/contactController.js';
 import { registerUser, loginUser } from '../controllers/authController.js';
 import requireAuth from '../middleware/authMiddleware.js';
-
 const router = Router();
 
 router.get('/', function (req, res) {
